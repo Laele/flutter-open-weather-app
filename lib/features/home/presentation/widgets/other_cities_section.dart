@@ -7,22 +7,36 @@ import 'package:flutter_weather_app/features/home/presentation/widgets/app_gradi
 import 'package:flutter_weather_app/init_dependencies.dart';
 import 'package:lottie/lottie.dart';
 
-class OtherCitiesSection extends StatelessWidget {
+class OtherCitiesSection extends StatefulWidget {
   const OtherCitiesSection({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final Map<String, List<double>> otherCities = {
+  State<OtherCitiesSection> createState() => _OtherCitiesSectionState();
+}
+
+class _OtherCitiesSectionState extends State<OtherCitiesSection> {
+  late final Map<String, List<double>> otherCities;
+  late final List<CurrentWeatherBloc> currenWeatherBlocs;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    this.otherCities = {
       'Paris, France': [48.864716, 2.349014],
       'Bangkok, Thailand': [13.736717, 100.523186],
       'London, Unite Kingdom': [51.509865, -0.118092],
     };
 
-    final blocs = otherCities.entries.map((city) {
+    this.currenWeatherBlocs = otherCities.entries.map((city) {
       final bloc = serviceLocator<CurrentWeatherBloc>()..add(GetCurrentWeather());
       return bloc;
     }).toList();
+  }
 
+  @override
+  Widget build(BuildContext context) {
     return Column(
       children: [
         Align(
@@ -49,7 +63,7 @@ class OtherCitiesSection extends StatelessWidget {
                 final controller = PageController(viewportFraction: viewportFraction);
 
                 return MultiBlocProvider(
-                  providers: [for (int i = 0; i < blocs.length; i++) BlocProvider<CurrentWeatherBloc>.value(value: blocs[i])],
+                  providers: [for (int i = 0; i < currenWeatherBlocs.length; i++) BlocProvider<CurrentWeatherBloc>.value(value: currenWeatherBlocs[i])],
                   child: PageView.builder(
                     padEnds: cardFits ? false : true,
                     //clipBehavior: Clip.none,
@@ -57,7 +71,7 @@ class OtherCitiesSection extends StatelessWidget {
                     itemCount: otherCities.length,
                     itemBuilder: (context, index) {
                       return BlocProvider.value(
-                        value: blocs[index],
+                        value: currenWeatherBlocs[index],
                         child: Align(
                           alignment: Alignment.topCenter,
                           child: SizedBox(
