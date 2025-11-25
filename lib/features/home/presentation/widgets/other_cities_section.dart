@@ -18,6 +18,11 @@ class OtherCitiesSection extends StatelessWidget {
       'London, Unite Kingdom': [51.509865, -0.118092],
     };
 
+    final blocs = otherCities.entries.map((city) {
+      final bloc = serviceLocator<CurrentWeatherBloc>()..add(GetCurrentWeather());
+      return bloc;
+    }).toList();
+
     return Column(
       children: [
         Align(
@@ -43,25 +48,31 @@ class OtherCitiesSection extends StatelessWidget {
                 final viewportFraction = cardFits ? cardWidth / constraints.maxWidth : 0.8;
                 final controller = PageController(viewportFraction: viewportFraction);
 
-                return PageView.builder(
-                  padEnds: cardFits ? false : true,
-                  //clipBehavior: Clip.none,
-                  controller: controller,
-                  itemCount: otherCities.length,
-                  itemBuilder: (context, index) {
-                    return Align(
-                      alignment: Alignment.topCenter,
-                      child: SizedBox(
-                        width: cardWidth,
-                        child: _Card(
-                          index: index,
-                          cityName: otherCities.keys.elementAt(index),
-                          lat: otherCities[otherCities.keys.elementAt(index)]![0],
-                          lon: otherCities[otherCities.keys.elementAt(index)]![1],
+                return MultiBlocProvider(
+                  providers: [for (int i = 0; i < blocs.length; i++) BlocProvider<CurrentWeatherBloc>.value(value: blocs[i])],
+                  child: PageView.builder(
+                    padEnds: cardFits ? false : true,
+                    //clipBehavior: Clip.none,
+                    controller: controller,
+                    itemCount: otherCities.length,
+                    itemBuilder: (context, index) {
+                      return BlocProvider.value(
+                        value: blocs[index],
+                        child: Align(
+                          alignment: Alignment.topCenter,
+                          child: SizedBox(
+                            width: cardWidth,
+                            child: _Card(
+                              index: index,
+                              cityName: otherCities.keys.elementAt(index),
+                              lat: otherCities[otherCities.keys.elementAt(index)]![0],
+                              lon: otherCities[otherCities.keys.elementAt(index)]![1],
+                            ),
+                          ),
                         ),
-                      ),
-                    );
-                  },
+                      );
+                    },
+                  ),
                 );
               },
             ).animate().fade(delay: Duration(milliseconds: 500)),
@@ -81,72 +92,69 @@ class _Card extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => serviceLocator<CurrentWeatherBloc>()..add(GetCurrentWeather()),
-      child: BlocBuilder<CurrentWeatherBloc, CurrentWeatherState>(
-        builder: (context, state) {
-          if (state is CurrentWeatherSuccess) {
-            return Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: AspectRatio(
-                aspectRatio: 16 / 6,
-                child: Stack(
-                  children: [
-                    Align(
-                      alignment: Alignment.center,
-                      child: FractionallySizedBox(widthFactor: 0.9, child: AppGradientContainer()),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Flexible(flex: 2, child: Lottie.asset(getWeatherAsset(state.weather.mainWeather.icon), fit: BoxFit.contain)),
-                        Expanded(
-                          flex: 4,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              FittedBox(
-                                child: Text(
-                                  '$cityName',
-                                  style: Theme.of(context).textTheme.headlineSmall!.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
+    return BlocBuilder<CurrentWeatherBloc, CurrentWeatherState>(
+      builder: (context, state) {
+        if (state is CurrentWeatherSuccess) {
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: AspectRatio(
+              aspectRatio: 16 / 6,
+              child: Stack(
+                children: [
+                  Align(
+                    alignment: Alignment.center,
+                    child: FractionallySizedBox(widthFactor: 0.9, child: AppGradientContainer()),
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Flexible(flex: 2, child: Lottie.asset(getWeatherAsset(state.weather.mainWeather.icon), fit: BoxFit.contain)),
+                      Expanded(
+                        flex: 4,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            FittedBox(
+                              child: Text(
+                                '$cityName',
+                                style: Theme.of(context).textTheme.headlineSmall!.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               ),
-                              FittedBox(
-                                child: Text(
-                                  state.weather.mainWeather.main,
-                                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.white.withAlpha(155)),
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        Expanded(
-                          flex: 2,
-                          child: FittedBox(
-                            child: Text(
-                              '${state.weather.mainTemp.temp.toInt()}°',
-                              style: Theme.of(context).textTheme.headlineMedium!.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
                             ),
+                            FittedBox(
+                              child: Text(
+                                state.weather.mainWeather.main,
+                                style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.white.withAlpha(155)),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      Expanded(
+                        flex: 2,
+                        child: FittedBox(
+                          child: Text(
+                            '${state.weather.mainTemp.temp.toInt()}°',
+                            style: Theme.of(context).textTheme.headlineMedium!.copyWith(color: Colors.white, fontWeight: FontWeight.bold),
                           ),
                         ),
-                      ],
-                    ),
-                  ],
-                ),
+                      ),
+                    ],
+                  ),
+                ],
               ),
-            );
-          }
-          if (state is CurrentWeatherFailure) {
-            return Center(child: Icon(Icons.cancel));
-          }
-          return Center(child: CircularProgressIndicator());
-        },
-      ),
+            ),
+          );
+        }
+        if (state is CurrentWeatherFailure) {
+          return Center(child: Icon(Icons.cancel));
+        }
+        return Center(child: CircularProgressIndicator());
+      },
     );
   }
 }

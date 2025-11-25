@@ -76,7 +76,7 @@ class HourlyWeatherSection extends StatelessWidget {
                     ).animate().fadeIn(delay: Duration(milliseconds: 400)),
                   );
                 }
-                return CircularProgressIndicator();
+                return Center(child: CircularProgressIndicator());
               },
             ),
           ),
