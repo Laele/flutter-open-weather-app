@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter_weather_app/core/usecase/usecase.dart';
@@ -33,7 +32,6 @@ class CurrentWeatherBloc extends Bloc<CurrentWeatherEvent, CurrentWeatherState> 
         emit(CurrentWeatherFailure(error: l.message));
       },
       (r) {
-        log(r.mainWeather.main);
         emit(CurrentWeatherSuccess(weather: r));
       },
     );

@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_weather_app/core/common/utils/get_weather_animation.dart';
+import 'package:flutter_weather_app/core/theme/app_pallete.dart';
 import 'package:flutter_weather_app/features/home/presentation/current_weather_bloc/current_weather_bloc.dart';
 import 'package:flutter_weather_app/features/home/presentation/widgets/app_gradient_container.dart';
+import 'package:flutter_weather_app/features/home/presentation/widgets/shimmer_container.dart';
 import 'package:flutter_weather_app/init_dependencies.dart';
 import 'package:lottie/lottie.dart';
+import 'package:shimmer/shimmer.dart';
 
 class OtherCitiesSection extends StatefulWidget {
   const OtherCitiesSection({super.key});
@@ -89,7 +92,7 @@ class _OtherCitiesSectionState extends State<OtherCitiesSection> {
                   ),
                 );
               },
-            ).animate().fade(delay: Duration(milliseconds: 500)),
+            ).animate().fade(),
           ),
         ),
       ],
@@ -164,11 +167,33 @@ class _Card extends StatelessWidget {
             ),
           );
         }
-        if (state is CurrentWeatherFailure) {
-          return Center(child: Icon(Icons.cancel));
+        if (state is CurrentWeatherInitial || state is CurrentWeatherLoading) {
+          return OtherCitiesPageCard(child: ShimmerContainer(child: AppGradientContainer()));
         }
-        return Center(child: CircularProgressIndicator());
+
+        return OtherCitiesPageCard(
+          child: AppGradientContainer(child: Center(child: Icon(Icons.refresh))),
+        );
       },
+    );
+  }
+}
+
+class OtherCitiesPageCard extends StatelessWidget {
+  final Widget child;
+  const OtherCitiesPageCard({super.key, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: AspectRatio(
+        aspectRatio: 16 / 6,
+        child: Align(
+          alignment: Alignment.center,
+          child: FractionallySizedBox(widthFactor: 0.9, child: child),
+        ),
+      ),
     );
   }
 }

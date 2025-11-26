@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_weather_app/core/common/utils/get_weather_animation.dart';
 import 'package:flutter_weather_app/features/home/presentation/hourly_weather_bloc/hourly_weather_bloc.dart';
 import 'package:flutter_weather_app/features/home/presentation/widgets/app_gradient_container.dart';
+import 'package:flutter_weather_app/features/home/presentation/widgets/shimmer_container.dart';
 import 'package:lottie/lottie.dart';
 
 class HourlyWeatherSection extends StatelessWidget {
@@ -73,10 +74,28 @@ class HourlyWeatherSection extends StatelessWidget {
                           ),
                         ),
                       ),
-                    ).animate().fadeIn(delay: Duration(milliseconds: 400)),
+                    ).animate().fadeIn(),
                   );
                 }
-                return Center(child: CircularProgressIndicator());
+
+                if (state is HourlyWeatherInitial || state is HourlyWeatherLoading) {
+                  return ListView.builder(
+                    clipBehavior: Clip.hardEdge,
+                    itemCount: 12,
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, index) => Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: AspectRatio(
+                        aspectRatio: 8 / 15,
+                        child: ShimmerContainer(child: AppGradientContainer()),
+                      ),
+                    ),
+                  );
+                }
+
+                return Center(
+                  child: IconButton(onPressed: () {}, icon: Icon(Icons.refresh)),
+                );
               },
             ),
           ),

@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_weather_app/core/blocs/theme_cubit/theme_cubit.dart';
 import 'package:flutter_weather_app/core/theme/app_text_theme_extensions.dart';
+import 'package:flutter_weather_app/features/home/presentation/current_weather_bloc/current_weather_bloc.dart';
+import 'package:flutter_weather_app/features/home/presentation/widgets/shimmer_container.dart';
+import 'package:shimmer/shimmer.dart';
 
 class CustomAppBar extends StatelessWidget {
-  final String location;
-  const CustomAppBar({super.key, required this.location});
+  const CustomAppBar({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +19,21 @@ class CustomAppBar extends StatelessWidget {
         ),
         Expanded(
           child: Center(
-            child: Text(location, style: Theme.of(context).textTheme.titleLargeBold(context), maxLines: 1, overflow: TextOverflow.ellipsis),
+            child: BlocBuilder<CurrentWeatherBloc, CurrentWeatherState>(
+              builder: (context, state) {
+                if (state is CurrentWeatherSuccess) {
+                  return Text(
+                    '${state.weather.country} ',
+                    style: Theme.of(context).textTheme.titleLargeBold(context),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  );
+                } else if (state is CurrentWeatherInitial || state is CurrentWeatherLoading) {
+                  return ShimmerContainer(height: 12, width: 200);
+                }
+                return Text('No available Data', style: Theme.of(context).textTheme.titleLargeBold(context), maxLines: 1, overflow: TextOverflow.ellipsis);
+              },
+            ),
           ),
         ),
         BlocBuilder<ThemeCubit, ThemeState>(
