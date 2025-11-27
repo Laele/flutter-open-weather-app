@@ -33,7 +33,7 @@ class _OtherCitiesSectionState extends State<OtherCitiesSection> {
     };
 
     this.currenWeatherBlocs = otherCities.entries.map((city) {
-      final bloc = serviceLocator<CurrentWeatherBloc>()..add(GetCurrentWeather());
+      final bloc = serviceLocator<CurrentWeatherBloc>()..add(GetCurrentWeatherWithLocation(latitude: city.value[0], longitude: city.value[1]));
       return bloc;
     }).toList();
   }

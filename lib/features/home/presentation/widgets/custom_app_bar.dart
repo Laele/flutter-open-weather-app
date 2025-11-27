@@ -23,7 +23,7 @@ class CustomAppBar extends StatelessWidget {
               builder: (context, state) {
                 if (state is CurrentWeatherSuccess) {
                   return Text(
-                    '${state.weather.country} ',
+                    '${state.weather.city}, ${state.weather.country} ',
                     style: Theme.of(context).textTheme.titleLargeBold(context),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,

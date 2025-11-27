@@ -1,11 +1,12 @@
 import 'package:dio/dio.dart';
+import 'package:flutter_weather_app/core/common/services/location/domain/entities/user_location_entity.dart';
 import 'package:flutter_weather_app/features/home/data/models/current_weather_model.dart';
 import 'package:flutter_weather_app/features/home/data/models/hourly_weather_model.dart';
 import 'package:flutter_weather_app/secrets.dart';
 
 abstract interface class WeatherRemoteDataSource {
-  Future<CurrentWeatherModel> getCurrentWeather();
-  Future<List<HourlyWeatherModel>> getHourlyWeather();
+  Future<CurrentWeatherModel> getCurrentWeather({required UserLocation location});
+  Future<List<HourlyWeatherModel>> getHourlyWeather({required UserLocation location});
 }
 
 class WeatherRemoteDataSourceImpl implements WeatherRemoteDataSource {
@@ -13,11 +14,11 @@ class WeatherRemoteDataSourceImpl implements WeatherRemoteDataSource {
   WeatherRemoteDataSourceImpl({required this.dioClient});
 
   @override
-  Future<CurrentWeatherModel> getCurrentWeather() async {
+  Future<CurrentWeatherModel> getCurrentWeather({required UserLocation location}) async {
     try {
       final response = await dioClient.get(
         'https://api.openweathermap.org/data/2.5/weather',
-        queryParameters: {'lat': '20.57196', 'lon': '-101.19154', 'units': 'metric', 'appid': Secrets.openWeatherApiKey},
+        queryParameters: {'lat': location.latitude, 'lon': location.longitude, 'units': 'metric', 'appid': Secrets.openWeatherApiKey},
       );
       return CurrentWeatherModel.fromJson(response.data);
     } catch (e) {
@@ -26,11 +27,11 @@ class WeatherRemoteDataSourceImpl implements WeatherRemoteDataSource {
   }
 
   @override
-  Future<List<HourlyWeatherModel>> getHourlyWeather() async {
+  Future<List<HourlyWeatherModel>> getHourlyWeather({required UserLocation location}) async {
     try {
       final response = await dioClient.get(
         'https://api.openweathermap.org/data/2.5/forecast',
-        queryParameters: {'lat': '20.57196', 'lon': '-101.19154', 'units': 'metric', 'appid': Secrets.openWeatherApiKey},
+        queryParameters: {'lat': location.latitude, 'lon': location.longitude, 'units': 'metric', 'appid': Secrets.openWeatherApiKey},
       );
       return (response.data['list'] as List<dynamic>).map((i) => HourlyWeatherModel.fromJson(i)).toList();
     } catch (e) {

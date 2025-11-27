@@ -29,7 +29,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ThemeCubit, ThemeState>(
+    /*return BlocBuilder<ThemeCubit, ThemeState>(
       builder: (context, state) => DevicePreview(
         enabled: true,
         builder: (BuildContext context) {
@@ -43,12 +43,12 @@ class MyApp extends StatelessWidget {
           );
         },
       ),
-    );
+    );*/
 
-    /*return BlocBuilder<ThemeCubit, ThemeState>(
+    return BlocBuilder<ThemeCubit, ThemeState>(
       builder: (context, state) =>
           MaterialApp(theme: AppTheme.light(), darkTheme: AppTheme.dark(), themeMode: state.themeMode, home: const HomeResponsiveScreen()),
-    );*/
+    );
   }
 }
 
