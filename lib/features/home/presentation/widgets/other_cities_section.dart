@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_weather_app/core/common/constants/other_cities.dart';
 import 'package:flutter_weather_app/core/common/utils/get_weather_animation.dart';
 import 'package:flutter_weather_app/core/theme/app_pallete.dart';
 import 'package:flutter_weather_app/features/home/presentation/current_weather_bloc/current_weather_bloc.dart';
@@ -11,18 +12,20 @@ import 'package:lottie/lottie.dart';
 import 'package:shimmer/shimmer.dart';
 
 class OtherCitiesSection extends StatefulWidget {
-  const OtherCitiesSection({super.key});
+  final List<CurrentWeatherBloc> otherCitiesBloc;
+
+  const OtherCitiesSection({super.key, required this.otherCitiesBloc});
 
   @override
   State<OtherCitiesSection> createState() => _OtherCitiesSectionState();
 }
 
 class _OtherCitiesSectionState extends State<OtherCitiesSection> {
-  late final Map<String, List<double>> otherCities;
-  late final List<CurrentWeatherBloc> currenWeatherBlocs;
+  /*late final Map<String, List<double>> otherCities;
+  late final List<CurrentWeatherBloc> currenWeatherBlocs;*/
 
   @override
-  void initState() {
+  /*void initState() {
     // TODO: implement initState
     super.initState();
 
@@ -36,8 +39,7 @@ class _OtherCitiesSectionState extends State<OtherCitiesSection> {
       final bloc = serviceLocator<CurrentWeatherBloc>()..add(GetCurrentWeatherWithLocation(latitude: city.value[0], longitude: city.value[1]));
       return bloc;
     }).toList();
-  }
-
+  }*/
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -65,31 +67,28 @@ class _OtherCitiesSectionState extends State<OtherCitiesSection> {
                 final viewportFraction = cardFits ? cardWidth / constraints.maxWidth : 0.8;
                 final controller = PageController(viewportFraction: viewportFraction);
 
-                return MultiBlocProvider(
-                  providers: [for (int i = 0; i < currenWeatherBlocs.length; i++) BlocProvider<CurrentWeatherBloc>.value(value: currenWeatherBlocs[i])],
-                  child: PageView.builder(
-                    padEnds: cardFits ? false : true,
-                    //clipBehavior: Clip.none,
-                    controller: controller,
-                    itemCount: otherCities.length,
-                    itemBuilder: (context, index) {
-                      return BlocProvider.value(
-                        value: currenWeatherBlocs[index],
-                        child: Align(
-                          alignment: Alignment.topCenter,
-                          child: SizedBox(
-                            width: cardWidth,
-                            child: _Card(
-                              index: index,
-                              cityName: otherCities.keys.elementAt(index),
-                              lat: otherCities[otherCities.keys.elementAt(index)]![0],
-                              lon: otherCities[otherCities.keys.elementAt(index)]![1],
-                            ),
+                return PageView.builder(
+                  padEnds: cardFits ? false : true,
+                  //clipBehavior: Clip.none,
+                  controller: controller,
+                  itemCount: OtherCities.otherCities.length,
+                  itemBuilder: (context, index) {
+                    return BlocProvider.value(
+                      value: widget.otherCitiesBloc[index],
+                      child: Align(
+                        alignment: Alignment.topCenter,
+                        child: SizedBox(
+                          width: cardWidth,
+                          child: _Card(
+                            index: index,
+                            cityName: OtherCities.otherCities.keys.elementAt(index),
+                            lat: OtherCities.otherCities[OtherCities.otherCities.keys.elementAt(index)]![0],
+                            lon: OtherCities.otherCities[OtherCities.otherCities.keys.elementAt(index)]![1],
                           ),
                         ),
-                      );
-                    },
-                  ),
+                      ),
+                    );
+                  },
                 );
               },
             ).animate().fade(),

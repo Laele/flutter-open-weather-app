@@ -16,8 +16,8 @@ void main() async {
     MultiBlocProvider(
       providers: [
         BlocProvider(create: (context) => serviceLocator<ThemeCubit>()),
-        BlocProvider(create: (context) => serviceLocator<CurrentWeatherBloc>()..add(GetCurrentWeather()), lazy: true),
-        BlocProvider(create: (context) => serviceLocator<HourlyWeatherBloc>()..add(GetHourlyWeather()), lazy: true),
+        BlocProvider(create: (context) => serviceLocator<CurrentWeatherBloc>()..add(GetCurrentWeather())),
+        BlocProvider(create: (context) => serviceLocator<HourlyWeatherBloc>()..add(GetHourlyWeather())),
       ],
       child: const MyApp(),
     ),
