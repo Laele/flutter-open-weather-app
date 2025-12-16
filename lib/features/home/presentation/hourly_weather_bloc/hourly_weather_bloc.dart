@@ -24,7 +24,7 @@ class HourlyWeatherBloc extends Bloc<HourlyWeatherEvent, HourlyWeatherState> {
 
   FutureOr<void> _onGetHourlyWeather(GetHourlyWeather event, Emitter<HourlyWeatherState> emit) async {
     emit(HourlyWeatherLoading());
-    await Future.delayed(Duration(seconds: 5));
+    await Future.delayed(Duration(seconds: 1));
 
     final location = await _getLocationUseCase(NoParams());
 

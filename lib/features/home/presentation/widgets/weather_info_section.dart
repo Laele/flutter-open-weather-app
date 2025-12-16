@@ -25,18 +25,9 @@ class WeatherInfoSection extends StatelessWidget {
             pressure: '${state.weather.mainTemp.pressure} hPa',
           );
         } else if (state is CurrentWeatherInitial || state is CurrentWeatherLoading) {
-          return ShimmerContainer(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Container(
-                decoration: BoxDecoration(color: Theme.of(context).extension<AppPallete>()!.primaryContainerColor, borderRadius: BorderRadius.circular(12.0)),
-                constraints: BoxConstraints(maxWidth: 600),
-                child: Padding(padding: const EdgeInsets.all(8.0), child: Container(height: 80)),
-              ),
-            ),
-          );
+          return WeatherInfoContainer(feelsLike: ' °', humidity: ' %', pressure: ' hPa');
         }
-        return WeatherInfoContainer(feelsLike: '-', humidity: '-', pressure: '-');
+        return WeatherInfoContainer(feelsLike: '- °', humidity: '- %', pressure: '- hPa');
       },
     );
   }

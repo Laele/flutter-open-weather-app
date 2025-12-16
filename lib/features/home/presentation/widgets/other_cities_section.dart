@@ -3,13 +3,10 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_weather_app/core/common/constants/other_cities.dart';
 import 'package:flutter_weather_app/core/common/utils/get_weather_animation.dart';
-import 'package:flutter_weather_app/core/theme/app_pallete.dart';
 import 'package:flutter_weather_app/features/home/presentation/current_weather_bloc/current_weather_bloc.dart';
 import 'package:flutter_weather_app/features/home/presentation/widgets/app_gradient_container.dart';
 import 'package:flutter_weather_app/features/home/presentation/widgets/shimmer_container.dart';
-import 'package:flutter_weather_app/init_dependencies.dart';
 import 'package:lottie/lottie.dart';
-import 'package:shimmer/shimmer.dart';
 
 class OtherCitiesSection extends StatefulWidget {
   final List<CurrentWeatherBloc> otherCitiesBloc;
@@ -21,25 +18,6 @@ class OtherCitiesSection extends StatefulWidget {
 }
 
 class _OtherCitiesSectionState extends State<OtherCitiesSection> {
-  /*late final Map<String, List<double>> otherCities;
-  late final List<CurrentWeatherBloc> currenWeatherBlocs;*/
-
-  @override
-  /*void initState() {
-    // TODO: implement initState
-    super.initState();
-
-    this.otherCities = {
-      'Paris, France': [48.864716, 2.349014],
-      'Bangkok, Thailand': [13.736717, 100.523186],
-      'London, Unite Kingdom': [51.509865, -0.118092],
-    };
-
-    this.currenWeatherBlocs = otherCities.entries.map((city) {
-      final bloc = serviceLocator<CurrentWeatherBloc>()..add(GetCurrentWeatherWithLocation(latitude: city.value[0], longitude: city.value[1]));
-      return bloc;
-    }).toList();
-  }*/
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -160,18 +138,19 @@ class _Card extends StatelessWidget {
                         ),
                       ),
                     ],
-                  ),
+                  ).animate().fade(duration: Duration(seconds: 1)),
                 ],
               ),
             ),
           );
         }
+
         if (state is CurrentWeatherInitial || state is CurrentWeatherLoading) {
-          return OtherCitiesPageCard(child: ShimmerContainer(child: AppGradientContainer()));
+          return OtherCitiesPageCard(child: AppGradientContainer());
         }
 
         return OtherCitiesPageCard(
-          child: AppGradientContainer(child: Center(child: Icon(Icons.refresh))),
+          child: AppGradientContainer(child: Center(child: Icon(Icons.cancel))),
         );
       },
     );

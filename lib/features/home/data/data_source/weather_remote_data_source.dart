@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_weather_app/core/common/services/location/domain/entities/user_location_entity.dart';
+import 'package:flutter_weather_app/core/error/exceptions.dart';
+import 'package:flutter_weather_app/core/error/map_dio_exceptions.dart';
 import 'package:flutter_weather_app/features/home/data/models/current_weather_model.dart';
 import 'package:flutter_weather_app/features/home/data/models/hourly_weather_model.dart';
 import 'package:flutter_weather_app/secrets.dart';
@@ -21,8 +23,10 @@ class WeatherRemoteDataSourceImpl implements WeatherRemoteDataSource {
         queryParameters: {'lat': location.latitude, 'lon': location.longitude, 'units': 'metric', 'appid': Secrets.openWeatherApiKey},
       );
       return CurrentWeatherModel.fromJson(response.data);
+    } on DioException catch (e) {
+      throw mapDioException(e);
     } catch (e) {
-      throw 'error';
+      throw UnkwnownException();
     }
   }
 
@@ -34,8 +38,10 @@ class WeatherRemoteDataSourceImpl implements WeatherRemoteDataSource {
         queryParameters: {'lat': location.latitude, 'lon': location.longitude, 'units': 'metric', 'appid': Secrets.openWeatherApiKey},
       );
       return (response.data['list'] as List<dynamic>).map((i) => HourlyWeatherModel.fromJson(i)).toList();
+    } on DioException catch (e) {
+      throw mapDioException(e);
     } catch (e) {
-      throw 'error';
+      throw UnkwnownException();
     }
   }
 }

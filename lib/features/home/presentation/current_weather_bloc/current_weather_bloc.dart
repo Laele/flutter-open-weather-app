@@ -30,7 +30,7 @@ class CurrentWeatherBloc extends Bloc<CurrentWeatherEvent, CurrentWeatherState> 
 
   FutureOr<void> _onGetCurrentWeather(GetCurrentWeather event, Emitter<CurrentWeatherState> emit) async {
     emit(CurrentWeatherLoading());
-    await Future.delayed(Duration(seconds: 5));
+    await Future.delayed(Duration(seconds: 1));
 
     final location = await _getLocationUseCase(NoParams());
 
@@ -54,7 +54,7 @@ class CurrentWeatherBloc extends Bloc<CurrentWeatherEvent, CurrentWeatherState> 
 
   FutureOr<void> _onCurrentWeatherWithLocation(GetCurrentWeatherWithLocation event, Emitter<CurrentWeatherState> emit) async {
     emit(CurrentWeatherLoading());
-    await Future.delayed(Duration(seconds: 5));
+    await Future.delayed(Duration(seconds: 1));
     final currentWeatherWithLocationRes = await _getCurrentWeatherUseCase(UserLocation(latitude: event.latitude, longitude: event.longitude));
     currentWeatherWithLocationRes.fold(
       (l) {

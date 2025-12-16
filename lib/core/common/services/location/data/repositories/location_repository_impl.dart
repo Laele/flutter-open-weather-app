@@ -3,6 +3,7 @@ import 'package:flutter_weather_app/core/common/services/location/data/data_sour
 import 'package:flutter_weather_app/core/common/services/location/domain/entities/user_location_entity.dart';
 import 'package:flutter_weather_app/core/common/services/location/domain/repositories/location_repository.dart';
 import 'package:flutter_weather_app/core/error/failures.dart';
+import 'package:flutter_weather_app/core/error/exceptions/location_exceptions.dart';
 
 class LocationRepositoryImpl implements LocationRepository {
   final LocationRemoteDataSource locationRemoteDataSource;
@@ -13,8 +14,10 @@ class LocationRepositoryImpl implements LocationRepository {
     try {
       final UserLocation userLocation = await locationRemoteDataSource.getLocation();
       return right(userLocation);
+    } on LocationException catch (_) {
+      return left(LocationFailure());
     } catch (e) {
-      return left(Failure(message: e.toString()));
+      return left(LocationUnkwnownFailure());
     }
   }
 }

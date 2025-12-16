@@ -56,8 +56,8 @@ class Palettes {
     primaryTextColor: Color.fromARGB(255, 10, 68, 175),
     primaryContainerColor: Colors.white,
     primaryBoxShadowContainerColor: Colors.black.withAlpha(70),
-    shimmerBoxColor: Colors.grey.shade400,
-    highlightShimmerColor: Colors.grey.shade300,
+    shimmerBoxColor: Color.fromARGB(255, 186, 204, 222),
+    highlightShimmerColor: Color.fromARGB(255, 210, 222, 234),
   );
   static AppPallete dark = AppPallete(
     scaffoldBackgroundColor: null,

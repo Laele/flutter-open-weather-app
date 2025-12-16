@@ -36,65 +36,52 @@ class HourlyWeatherSection extends StatelessWidget {
                     clipBehavior: Clip.hardEdge,
                     itemCount: state.hourlyWeather.length,
                     scrollDirection: Axis.horizontal,
-                    itemBuilder: (context, index) => Padding(
-                      padding: const EdgeInsets.only(right: 8.0),
-                      child: AspectRatio(
-                        aspectRatio: 8 / 15,
-                        child: AppGradientContainer(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                FittedBox(
-                                  child: Text(
-                                    state.hourlyWeather[index].dt,
-                                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.white),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                                FittedBox(
-                                  child: Text(
-                                    state.hourlyWeather[index].hour,
-                                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.white),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                                Expanded(child: Lottie.asset(getWeatherAsset(state.hourlyWeather[index].weatherList[0].icon), fit: BoxFit.contain)),
-                                FittedBox(
-                                  child: Text(
-                                    state.hourlyWeather[index].mainTemp.temp.toString(),
-                                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.white),
-                                  ),
-                                ),
-                              ],
+                    padding: const EdgeInsets.only(left: 8.0),
+                    itemBuilder: (context, index) => HourlyWeatherCard(
+                      contentWidget: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          FittedBox(
+                            child: Text(
+                              state.hourlyWeather[index].dt,
+                              style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.white),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                        ),
-                      ),
-                    ).animate().fadeIn(),
-                  );
-                }
-
-                if (state is HourlyWeatherInitial || state is HourlyWeatherLoading) {
-                  return ListView.builder(
-                    clipBehavior: Clip.hardEdge,
-                    itemCount: 12,
-                    scrollDirection: Axis.horizontal,
-                    itemBuilder: (context, index) => Padding(
-                      padding: const EdgeInsets.only(right: 8.0),
-                      child: AspectRatio(
-                        aspectRatio: 8 / 15,
-                        child: ShimmerContainer(child: AppGradientContainer()),
-                      ),
+                          FittedBox(
+                            child: Text(
+                              state.hourlyWeather[index].hour,
+                              style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.white),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                          Expanded(child: Lottie.asset(getWeatherAsset(state.hourlyWeather[index].weatherList[0].icon), fit: BoxFit.contain)),
+                          FittedBox(
+                            child: Text(
+                              state.hourlyWeather[index].mainTemp.temp.toString(),
+                              style: Theme.of(context).textTheme.bodyLarge!.copyWith(color: Colors.white),
+                            ),
+                          ),
+                        ],
+                      ).animate().fade(duration: Duration(seconds: 1)),
                     ),
                   );
                 }
 
-                return Center(
-                  child: IconButton(onPressed: () {}, icon: Icon(Icons.refresh)),
+                return ListView.builder(
+                  clipBehavior: Clip.hardEdge,
+                  itemCount: 8,
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.only(left: 8.0),
+
+                  itemBuilder: (context, index) {
+                    if (state is HourlyWeatherLoading || state is HourlyWeatherLoading) {
+                      return HourlyWeatherCard(contentWidget: SizedBox());
+                    }
+                    return HourlyWeatherCard(contentWidget: Center(child: Icon(Icons.cancel)));
+                  },
                 );
               },
             ),
@@ -102,5 +89,23 @@ class HourlyWeatherSection extends StatelessWidget {
         ),
       ],
     );
+  }
+}
+
+class HourlyWeatherCard extends StatelessWidget {
+  final Widget contentWidget;
+  const HourlyWeatherCard({super.key, required this.contentWidget});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 8.0),
+      child: AspectRatio(
+        aspectRatio: 8 / 15,
+        child: AppGradientContainer(
+          child: Padding(padding: const EdgeInsets.all(8.0), child: contentWidget),
+        ),
+      ),
+    ).animate().fadeIn();
   }
 }
